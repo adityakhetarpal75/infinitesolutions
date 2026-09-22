@@ -29,6 +29,10 @@ export default function InfoPanel() {
             <PhoneCall className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" />
             <span>{siteConfig.phoneDisplay}</span>
           </li>
+          <li className="flex items-start gap-3">
+            <PhoneCall className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" />
+            <span>{siteConfig.phoneDisplaySecondary}</span>
+          </li>
         </ul>
       </div>
 

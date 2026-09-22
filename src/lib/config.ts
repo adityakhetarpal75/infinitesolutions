@@ -26,8 +26,9 @@ export const siteConfig = {
 
   email: "adityakhetarpal7@gmail.com",
 
-  // Display format for phone number shown on the site
+  // Display format for phone numbers shown on the site
   phoneDisplay: "+91 9910191790",
+  phoneDisplaySecondary: "+91 9999491790",
 
   // WhatsApp click-to-chat configuration.
   // Digits only: country code + number, no +, spaces or hyphens.

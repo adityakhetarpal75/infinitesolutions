@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
 import Container from "./Container";
 import Logo from "./Logo";
@@ -53,6 +53,15 @@ export default function Footer() {
                 >
                   <FaWhatsapp className="h-4 w-4 shrink-0 text-brand-400" />
                   {siteConfig.phoneDisplay}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${siteConfig.phoneDisplaySecondary.replace(/\s+/g, "")}`}
+                  className="flex items-center gap-2 transition-colors hover:text-white"
+                >
+                  <Phone className="h-4 w-4 shrink-0 text-brand-400" />
+                  {siteConfig.phoneDisplaySecondary}
                 </a>
               </li>
             </ul>
