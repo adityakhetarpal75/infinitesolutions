@@ -25,9 +25,37 @@ export default function Footer() {
             <Link href="/" className="flex items-center">
               <Logo theme="dark" />
             </Link>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-400">
-              {siteConfig.tagline}
-            </p>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-100">
+              Contact
+            </h3>
+            <ul className="mt-4 space-y-3 text-sm text-slate-400">
+              <li className="flex items-start gap-2">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" />
+                <span>{siteConfig.location}</span>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${siteConfig.email}`}
+                  className="transition-colors hover:text-white"
+                >
+                  {siteConfig.email}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={getWhatsAppLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 transition-colors hover:text-white"
+                >
+                  <FaWhatsapp className="h-4 w-4 shrink-0 text-brand-400" />
+                  {siteConfig.phoneDisplay}
+                </a>
+              </li>
+            </ul>
           </div>
 
           <div>
@@ -63,37 +91,6 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-100">
-              Contact
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-slate-400">
-              <li className="flex items-start gap-2">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" />
-                <span>{siteConfig.location}</span>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${siteConfig.email}`}
-                  className="transition-colors hover:text-white"
-                >
-                  {siteConfig.email}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={getWhatsAppLink()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 transition-colors hover:text-white"
-                >
-                  <FaWhatsapp className="h-4 w-4 shrink-0 text-brand-400" />
-                  {siteConfig.phoneDisplay}
-                </a>
-              </li>
             </ul>
           </div>
         </div>
