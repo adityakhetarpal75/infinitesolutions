@@ -15,17 +15,16 @@ export const siteConfig = {
     "Infinite Solutions provides software development, AI, cloud and automation solutions for modern businesses.",
 
   // Domain and canonical URL used for SEO metadata, sitemap and robots.txt
-  url: "https://infinitesolutionsit.com",
-  domain: "infinitesolutionsit.com",
+  url: "https://www.infinitesolutionit.com",
+  domain: "www.infinitesolutionit.com",
 
   // Business details
-  location: "Gurgaon, Haryana, India",
+  location: "M-3/38, DLF Phase 2, Sector 25, Gurgaon, Haryana 122008",
   addressLocality: "Gurgaon",
   addressRegion: "Haryana",
   addressCountry: "India",
 
-  // Replace with your real inbox when ready. This is a placeholder.
-  email: "contact@infinitesolutionsit.com",
+  email: "adityakhetarpal7@gmail.com",
 
   // Display format for phone number shown on the site
   phoneDisplay: "+91 9910191790",
