@@ -23,22 +23,21 @@ const initialState: FormState = {
 };
 
 type Errors = Partial<Record<keyof FormState, string>>;
+type Status = "idle" | "submitting" | "success" | "error";
 
 /**
  * Client-side contact form.
  *
- * This project does not include a backend or email-sending service yet, so
- * on submit the form opens the visitor's email app with a pre-filled message
- * addressed to siteConfig.email. This is honest about what actually happens
- * (no email is silently "sent" from a server that doesn't exist).
- *
- * To connect a real email service later, replace the `handleSubmit` body
- * with a call to your API route / email provider (e.g. Resend, SendGrid).
+ * On submit, this posts the form data to /api/contact, which sends an
+ * email to siteConfig.email via Gmail SMTP (see src/app/api/contact/route.ts).
+ * That route needs GMAIL_USER and GMAIL_APP_PASSWORD set as environment
+ * variables — see .env.example.
  */
 export default function ContactForm() {
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<Errors>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function validate(values: FormState): Errors {
     const nextErrors: Errors = {};
@@ -66,32 +65,38 @@ export default function ContactForm() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors = validate(form);
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) return;
 
-    const subject = `New inquiry from ${form.name}${
-      form.company ? ` (${form.company})` : ""
-    }`;
-    const bodyLines = [
-      `Name: ${form.name}`,
-      `Email: ${form.email}`,
-      form.phone ? `Phone: ${form.phone}` : null,
-      form.company ? `Company: ${form.company}` : null,
-      form.service ? `Service interested in: ${form.service}` : null,
-      "",
-      form.message,
-    ].filter(Boolean);
+    setStatus("submitting");
+    setErrorMessage("");
 
-    const mailto = `mailto:${siteConfig.email}?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    window.location.href = mailto;
-    setSubmitted(true);
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error ?? "Something went wrong. Please try again.");
+      }
+
+      setStatus("success");
+      setForm(initialState);
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again."
+      );
+    }
   }
 
   const inputClasses =
@@ -225,21 +230,21 @@ export default function ContactForm() {
 
       <button
         type="submit"
-        className="inline-flex w-full items-center justify-center rounded-md bg-navy-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-600 sm:w-auto"
+        disabled={status === "submitting"}
+        className="inline-flex w-full items-center justify-center rounded-md bg-navy-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
-        Send Inquiry
+        {status === "submitting" ? "Sending..." : "Send Inquiry"}
       </button>
 
-      <p className="text-xs leading-relaxed text-slate-500">
-        This form opens your email app with your message pre-filled and
-        addressed to {siteConfig.email}. No message is sent automatically
-        from a server.
-      </p>
-
-      {submitted ? (
+      {status === "success" ? (
         <p className="text-sm font-medium text-green-700">
-          Your email app should have opened. If it didn&apos;t, you can email
-          us directly at {siteConfig.email}.
+          Thanks — your message has been sent. We&apos;ll get back to you soon.
+        </p>
+      ) : null}
+
+      {status === "error" ? (
+        <p className="text-sm font-medium text-red-600">
+          {errorMessage} You can also email us directly at {siteConfig.email}.
         </p>
       ) : null}
     </form>
