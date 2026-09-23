@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { siteConfig } from "@/lib/config";
 
 interface ContactPayload {
@@ -25,10 +25,9 @@ function isValidPayload(data: unknown): data is ContactPayload {
 }
 
 export async function POST(request: Request) {
-  const gmailUser = process.env.GMAIL_USER;
-  const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+  const resendApiKey = process.env.RESEND_API_KEY;
 
-  if (!gmailUser || !gmailAppPassword) {
+  if (!resendApiKey) {
     return NextResponse.json(
       { error: "Email sending is not configured on the server." },
       { status: 500 }
@@ -51,13 +50,7 @@ export async function POST(request: Request) {
 
   const { name, email, phone, company, service, message } = body;
 
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: gmailUser,
-      pass: gmailAppPassword,
-    },
-  });
+  const resend = new Resend(resendApiKey);
 
   const textLines = [
     `Name: ${name}`,
@@ -70,13 +63,21 @@ export async function POST(request: Request) {
   ].filter(Boolean);
 
   try {
-    await transporter.sendMail({
-      from: `"${siteConfig.name} Website" <${gmailUser}>`,
+    const { error } = await resend.emails.send({
+      from: `${siteConfig.name} Website <onboarding@resend.dev>`,
       to: siteConfig.email,
       replyTo: email,
       subject: `New inquiry from ${name}${company ? ` (${company})` : ""}`,
       text: textLines.join("\n"),
     });
+
+    if (error) {
+      console.error("Resend failed to send contact form email:", error);
+      return NextResponse.json(
+        { error: "Something went wrong sending your message. Please try again." },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
