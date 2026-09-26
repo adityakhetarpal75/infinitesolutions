@@ -15,8 +15,8 @@ export const siteConfig = {
     "Infinite Solutions provides software development, AI, cloud and automation solutions for modern businesses.",
 
   // Domain and canonical URL used for SEO metadata, sitemap and robots.txt
-  url: "https://www.infinitesolutionit.com",
-  domain: "www.infinitesolutionit.com",
+  url: "https://infinitesolutionit.com",
+  domain: "infinitesolutionit.com",
 
   // Business details
   location: "M-3/38, DLF Phase 2, Sector 25, Gurgaon, Haryana 122008",
